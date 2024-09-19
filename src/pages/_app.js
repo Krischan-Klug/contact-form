@@ -5,21 +5,19 @@ import { SWRConfig } from "swr";
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 export default function App({ Component, pageProps }) {
+  // Fix hydration synchronization
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-    // Fix hydration synchronization
-    const [mounted, setMounted] = useState(false);
-    useEffect(() => {
-      setMounted(true);
-    }, []);
+  if (!mounted) return null;
 
-    if (!mounted) return null;
-
-
-  return  (
+  return (
     <>
       <SWRConfig value={{ fetcher }}>
-            <Component {...pageProps} />    
+        <Component {...pageProps} />
       </SWRConfig>
     </>
-  ); 
+  );
 }

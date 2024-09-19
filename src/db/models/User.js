@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
+  company: { type: String, required: false },
+  title: { type: String, required: false },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   address: { type: String, required: true },
@@ -10,10 +12,8 @@ const userSchema = new Schema({
   country: { type: String, required: true },
   email: { type: String, required: false },
   phone: { type: String, required: false },
-  ozon: { type: String, required: false },
-  colon: { type: String, required: false },
-  veterinary: { type: String, required: false },
-  disposables: { type: String, required: false },
+  interests: { type: Array, required: false },
+  information: { type: String, required: false },
   dsgvo: { type: String, required: true },
 });
 
