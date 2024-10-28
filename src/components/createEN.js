@@ -110,7 +110,7 @@ const StyledPopupContent = styled.div`
   align-items: center;
 `;
 
-export default function Create() {
+export default function CreateEN() {
   let finalUser = {};
 
   const [success, setSuccess] = useState(false);

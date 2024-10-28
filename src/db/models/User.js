@@ -15,6 +15,7 @@ const userSchema = new Schema({
   interests: { type: Array, required: false },
   information: { type: String, required: false },
   dsgvo: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
