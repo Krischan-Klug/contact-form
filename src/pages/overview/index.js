@@ -51,7 +51,7 @@ export default function Overview() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(null);
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
@@ -84,12 +84,13 @@ export default function Overview() {
           setUsers(data);
         } catch (error) {
           console.error("Error fetching data:", error);
+          setError(error.message);
         }
       }
 
       fetchData();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, error]);
 
   const handleCopy = (user) => {
     const formattedText = `${user.title} ${user.firstName} ${user.lastName}
@@ -142,43 +143,72 @@ Telefon: ${user.phone}`;
     );
   }
   if (isAuthenticated) {
-    return (
-      <ContentWrapper>
-        <h1>Overview</h1>
-        {users.map((user) => (
-          <StyledUserCard key={user._id}>
-            <StyledH3>{user.company}</StyledH3>
-            <StyledCardText>
-              {user.title} {user.firstName} {user.lastName}
-            </StyledCardText>
-            <StyledCardText>{user.address}</StyledCardText>
-            <StyledCardText>
-              {user.zipCode} {user.city}
-            </StyledCardText>
-            <StyledCardText>{user.country}</StyledCardText>
-            <StyledCardText>{user.phone}</StyledCardText>
-            <StyledCardText>{user.email}</StyledCardText>
-            <StyledInfoWrapper>
-              <StyledH3>Interessen:</StyledH3>
-              <StyledInterestsWrapper>
-                {user.interests.map((interest) => (
-                  <StyledCardText key={interest}>{interest}</StyledCardText>
-                ))}
-              </StyledInterestsWrapper>
-              <StyledH3>Info:</StyledH3>
-              <StyledCardText>{user.information}</StyledCardText>
-            </StyledInfoWrapper>
+    if (error && !users) {
+      return (
+        <ContentWrapper>
+          <h1>Overview</h1>
+          <h2>{error}</h2>
+          <h2>Bitte KK kontaktieren</h2>
+        </ContentWrapper>
+      );
+    }
 
-            <StyledCardText>Erstellt am: {user.createdAt}</StyledCardText>
-            <StyledButton onClick={() => handleCopy(user)}>
-              Daten kopieren
-            </StyledButton>
-            <StyledButton onClick={() => handleDelete(user._id)}>
-              Löschen
-            </StyledButton>
-          </StyledUserCard>
-        ))}
-      </ContentWrapper>
-    );
+    if (!users && !error) {
+      return (
+        <ContentWrapper>
+          <h1>Overview</h1>
+          <h2>Lade Kontakte....</h2>
+        </ContentWrapper>
+      );
+    }
+    if (users.length === 0) {
+      return (
+        <ContentWrapper>
+          <h1>Overview</h1>
+          <h2>Keine Kontakte gefunden</h2>
+        </ContentWrapper>
+      );
+    }
+
+    if (users.length >= 1) {
+      return (
+        <ContentWrapper>
+          <h1>Overview</h1>
+          {users.map((user) => (
+            <StyledUserCard key={user._id}>
+              <StyledH3>{user.company}</StyledH3>
+              <StyledCardText>
+                {user.title} {user.firstName} {user.lastName}
+              </StyledCardText>
+              <StyledCardText>{user.address}</StyledCardText>
+              <StyledCardText>
+                {user.zipCode} {user.city}
+              </StyledCardText>
+              <StyledCardText>{user.country}</StyledCardText>
+              <StyledCardText>{user.phone}</StyledCardText>
+              <StyledCardText>{user.email}</StyledCardText>
+              <StyledInfoWrapper>
+                <StyledH3>Interessen:</StyledH3>
+                <StyledInterestsWrapper>
+                  {user.interests.map((interest) => (
+                    <StyledCardText key={interest}>{interest}</StyledCardText>
+                  ))}
+                </StyledInterestsWrapper>
+                <StyledH3>Info:</StyledH3>
+                <StyledCardText>{user.information}</StyledCardText>
+              </StyledInfoWrapper>
+
+              <StyledCardText>Erstellt am: {user.createdAt}</StyledCardText>
+              <StyledButton onClick={() => handleCopy(user)}>
+                Daten kopieren
+              </StyledButton>
+              <StyledButton onClick={() => handleDelete(user._id)}>
+                Löschen
+              </StyledButton>
+            </StyledUserCard>
+          ))}
+        </ContentWrapper>
+      );
+    }
   }
 }
