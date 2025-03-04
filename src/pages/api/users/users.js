@@ -15,4 +15,13 @@ export default async function handler(req, res) {
       res.status(400).json({ error: error.message });
     }
   }
+
+  if (req.method === "GET") {
+    try {
+      const users = await User.find({}).exec();
+      res.status(200).json(users);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
 }
