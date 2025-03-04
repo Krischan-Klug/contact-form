@@ -24,4 +24,13 @@ export default async function handler(req, res) {
       res.status(400).json({ error: error.message });
     }
   }
+
+  if (req.method === "DELETE") {
+    try {
+      const user = await User.deleteOne({ _id: req.body.id });
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
 }

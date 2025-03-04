@@ -41,7 +41,7 @@ const StyledH3 = styled.h3`
   margin: 3px;
 `;
 
-const CopyButton = styled.button`
+const StyledButton = styled.button`
   margin-top: 10px;
   padding: 6px 12px;
   cursor: pointer;
@@ -97,9 +97,30 @@ ${user.address}
 ${user.country}
 ${user.zipCode} ${user.city}
 ${user.email}
-${user.phone}`;
-
+Telefon: ${user.phone}`;
     navigator.clipboard.writeText(formattedText);
+  };
+
+  const handleDelete = async (id) => {
+    const res = await fetch("/api/users/users", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    });
+
+    if (res.status === 200) {
+      const updatedUsers = users.filter((user) => user._id !== id);
+      setUsers(updatedUsers);
+    }
+
+    if (res.status === 400) {
+      alert(
+        res.statusText +
+          " - User konnte nicht gelöscht werden. Bitte versuche es erneut. Falls es nicht klappt KK kontaktieren."
+      );
+    }
   };
 
   if (!isAuthenticated) {
@@ -149,9 +170,12 @@ ${user.phone}`;
             </StyledInfoWrapper>
 
             <StyledCardText>Erstellt am: {user.createdAt}</StyledCardText>
-            <CopyButton onClick={() => handleCopy(user)}>
+            <StyledButton onClick={() => handleCopy(user)}>
               Daten kopieren
-            </CopyButton>
+            </StyledButton>
+            <StyledButton onClick={() => handleDelete(user._id)}>
+              Löschen
+            </StyledButton>
           </StyledUserCard>
         ))}
       </ContentWrapper>
